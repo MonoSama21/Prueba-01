@@ -1,0 +1,46 @@
+services:
+  # Servicio de Desarrollo
+  - type: web
+    name: boda-diter-vivian-dev
+    runtime: node
+    env: node
+    region: oregon
+    plan: free
+    branch: develop  # Rama de desarrollo
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: development
+      - key: PORT
+        value: 10000
+      - key: SUPABASE_URL
+        sync: false  # Se debe configurar manualmente en el dashboard
+      - key: SUPABASE_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true  # Render generará un valor aleatorio
+    healthCheckPath: /
+
+  # Servicio de Producción
+  - type: web
+    name: boda-diter-vivian-prod
+    runtime: node
+    env: node
+    region: oregon
+    plan: free
+    branch: main  # Rama principal (producción)
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+    healthCheckPath: /
