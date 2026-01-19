@@ -1,13 +1,18 @@
 import supabase from '../config/supabase';
 import { ConfirmacionAsistencia, ModelResponse } from '../types';
 
+// Seleccionar tabla según el ambiente
+const tableName = process.env.NODE_ENV === 'production' 
+  ? 'confirmaciones_asistencia' 
+  : 'confirmaciones_asistencia_dev';
+
 class FormularioModel {
   static async crearConfirmacion(
     datos: Omit<ConfirmacionAsistencia, 'id' | 'created_at' | 'updated_at'>
   ): Promise<ModelResponse<ConfirmacionAsistencia>> {
     try {
       const { data, error } = await supabase
-        .from('confirmaciones_asistencia')
+        .from(tableName)
         .insert([datos])
         .select()
         .single();
@@ -24,7 +29,7 @@ class FormularioModel {
   static async obtenerTodasConfirmaciones(): Promise<ModelResponse<ConfirmacionAsistencia[]>> {
     try {
       const { data, error } = await supabase
-        .from('confirmaciones_asistencia')
+        .from(tableName)
         .select('*')
         .order('created_at', { ascending: false });
 
