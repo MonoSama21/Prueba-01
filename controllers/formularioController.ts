@@ -1,5 +1,6 @@
 import FormularioModel from "../models/formularioModel";
 import { ApiResponse, ConfirmacionAsistencia } from '../types';
+import { enviarNotificacionAsistencia } from '../services/emailService';
 import { Request, Response } from 'express';
 
 class FormularioController {
@@ -11,7 +12,6 @@ class FormularioController {
     static async crearConfirmacion(req: Request, res: Response): Promise<void> {
         try {
             const datos: Omit<ConfirmacionAsistencia, 'id' | 'created_at' | 'updated_at'> = req.body;
-            
             //VALIDACIONES->STATUS CODE 400
 
             // 1. VERFIFICAR QUE NO SE ENVIE UN REQUEST VACIO
@@ -47,6 +47,11 @@ class FormularioController {
 
             // CASO EXITOSO-> STATUS CODE 201
             const resultado = await FormularioModel.crearConfirmacion(datos);
+
+             // Enviar notificación por correo (no bloquea la respuesta)
+            enviarNotificacionAsistencia(datos).catch(err => 
+                console.error('Error al enviar notificación por correo:', err)
+            );
             res.status(201).json({ 
                 success: true, 
                 message: 'Confirmación de asistencia creada exitosamente',
