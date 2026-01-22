@@ -11,6 +11,7 @@ export interface ConfirmacionAsistencia {
   updated_at?: string;
 }
 
+
 export interface ApiResponse<T = any> {
   success: boolean;
   message?: string;
