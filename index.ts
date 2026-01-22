@@ -77,11 +77,18 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-// Iniciar el servidor
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor TypeScript corriendo en http://localhost:${PORT}`);
-  console.log(`📋 Endpoints disponibles en http://localhost:${PORT}/boda/asistencia`);
-  console.log(`⏰ Keep-Alive de Supabase activado (ping cada 5 minutos)`);
-  // Activar el servicio Keep-Alive
-  mantenerSupabaseActivo();
-});
+// Iniciar el servidor solo en desarrollo (Vercel maneja esto automáticamente)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Servidor TypeScript corriendo en http://localhost:${PORT}`);
+    console.log(`📋 Endpoints disponibles en http://localhost:${PORT}/boda/asistencia`);
+    console.log(`⏰ Keep-Alive de Supabase activado (ping cada 5 minutos)`);
+    // Activar el servicio Keep-Alive solo en desarrollo
+    mantenerSupabaseActivo();
+  });
+} else {
+  console.log('🚀 Servidor ejecutándose en Vercel (serverless)');
+}
+
+// Exportar la app para Vercel
+export default app;
