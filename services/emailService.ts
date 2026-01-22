@@ -1,12 +1,21 @@
 import nodemailer from 'nodemailer';
 
-// Configurar el transportador de correo
+// Configurar el transportador de correo con opciones específicas para hosting
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // o 'outlook', 'yahoo', etc.
+  host: 'smtp.gmail.com',
+  port: 465, // Puerto SSL (más confiable en hosting)
+  secure: true, // true para puerto 465, false para otros puertos
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD
-  }
+  },
+  // Opciones adicionales para mejorar conectividad en hosting
+  tls: {
+    rejectUnauthorized: false // Aceptar certificados autofirmados (solo para producción si es necesario)
+  },
+  connectionTimeout: 10000, // 10 segundos
+  greetingTimeout: 10000,
+  socketTimeout: 10000
 });
 
 export const enviarNotificacionAsistencia = async (datosInvitado: any) => {
