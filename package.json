@@ -7,8 +7,7 @@
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only index.ts",
     "dev:watch": "nodemon --exec ts-node index.ts",
-    "docs": "ts-node generate-docs.ts",
-    "postinstall": "npm run build"
+    "docs": "ts-node generate-docs.ts"
   },
   "keywords": [],
   "author": "",
