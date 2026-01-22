@@ -36,6 +36,24 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
+// Health check (para keep-alive)
+app.get('/health', (req: Request, res: Response) => {
+  const uptime = process.uptime();
+  const uptimeMinutos = Math.floor(uptime / 60);
+  
+  res.status(200).json({
+    status: 'OK',
+    message: 'El servidor está funcionando correctamente',
+    timestamp: new Date().toISOString(),
+    uptime: {
+      segundos: Math.floor(uptime),
+      minutos: uptimeMinutos,
+      horas: Math.floor(uptimeMinutos / 60)
+    },
+    ambiente: process.env.NODE_ENV
+  });
+});
+
 
 // Rutas de la API
 app.use('/auth', authRoutes);

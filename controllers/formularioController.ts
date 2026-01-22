@@ -6,6 +6,27 @@ import { Request, Response } from 'express';
 class FormularioController {
 
   // ============================================
+  // HEALTH CHECK
+  // ============================================
+
+  static async healthCheck(req: Request, res: Response): Promise<void> {
+    const uptime = process.uptime();
+    const uptimeMinutos = Math.floor(uptime / 60);
+    
+    res.status(200).json({
+      status: 'OK',
+      message: 'El servidor está funcionando correctamente',
+      timestamp: new Date().toISOString(),
+      uptime: {
+        segundos: Math.floor(uptime),
+        minutos: uptimeMinutos,
+        horas: Math.floor(uptimeMinutos / 60)
+      },
+      ambiente: process.env.NODE_ENV
+    });
+  }
+
+  // ============================================
   // MÉTODOS PARA CONFIRMACIONES DE ASISTENCIA
   // ============================================
 
@@ -46,12 +67,12 @@ class FormularioController {
             }
 
             // CASO EXITOSO-> STATUS CODE 201
-            const resultado = await FormularioModel.crearConfirmacion(datos);
+            const resultado = await FormularioModel.crearConfirmacion(datos);  //ALGUN DIA VOLVER A IMPLEMENTAR LA FUNCIONALIDAD DE NOTIFICACION POR CORREO
 
-             // Enviar notificación por correo (no bloquea la respuesta)
-            enviarNotificacionAsistencia(datos).catch(err => 
-                console.error('Error al enviar notificación por correo:', err)
-            );
+            // Enviar notificación por correo (no bloquea la respuesta)
+            //enviarNotificacionAsistencia(datos).catch(err => 
+            //console.error('Error al enviar notificación por correo:', err)
+            //);
             res.status(201).json({ 
                 success: true, 
                 message: 'Confirmación de asistencia creada exitosamente',
