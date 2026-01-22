@@ -1,11 +1,18 @@
 import supabase from '../config/supabase';
 
+// Seleccionar tabla según el ambiente
+const tableName = process.env.NODE_ENV === 'production' 
+  ? 'confirmaciones_asistencia' 
+  : 'confirmaciones_asistencia_dev';
+
 /**
  * Mantiene la conexión con Supabase activa
  * Hace ping cada 5 minutos para evitar hibernación
  */
 export const mantenerSupabaseActivo = () => {
   console.log('🔄 Iniciando servicio Keep-Alive para Supabase...');
+  console.log(`📊 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📋 Tabla activa: ${tableName}`);
   
   // Hacer ping inmediatamente al iniciar
   hacerPing();
@@ -22,7 +29,7 @@ export const mantenerSupabaseActivo = () => {
 const hacerPing = async () => {
   try {
     const { data, error } = await supabase
-      .from('confirmaciones_asistencia')
+      .from(tableName)
       .select('id')
       .limit(1);
     
